@@ -26,3 +26,14 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return super().get_queryset()
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.filter(
+        parent__isnull=True
+    )
+    serializer_class = CategorySerializer
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]

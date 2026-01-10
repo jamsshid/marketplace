@@ -12,9 +12,10 @@ class Category(models.Model):
         blank=True,
         related_name='children'
     )
+    is_active = models.BooleanField(default=True)
     class Meta:
         verbose_name_plural = "Categories"
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
@@ -22,7 +23,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Product(models.Model):
     seller = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -60,4 +61,3 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(upload_to='products/')
     is_feature = models.BooleanField(default=False)
-    
