@@ -9,3 +9,6 @@ celery
 redis
 django-environ
 django-cors-headers
+django-redis
+django-celery-results
+django-celery-beat

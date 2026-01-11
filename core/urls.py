@@ -6,9 +6,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/products/", include("products.urls")),
-    path("api/users/", include("users.urls")),
-    path("api/orders/", include("orders.urls")),
+    path("api/products/", include("apps.products.urls")),
+    path("api/users/", include("apps.users.urls")),
+    path("api/orders/", include("apps.orders.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

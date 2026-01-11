@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, ProductImage
+from apps.products.models import Category, Product, ProductImage, Wishlist
 
 class CategorySerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
@@ -46,3 +46,11 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductImage.objects.create(product=product, image=image_data)
 
         return product
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    product_details = ProductSerializer(source="product", read_only=True)
+
+    class Meta:
+        model = Wishlist
+        fields = ["id", "product", "product_details", "added_at"]

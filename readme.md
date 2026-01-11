@@ -17,3 +17,6 @@ smart_marketplace/
 ├── docker-compose.yml
 └── manage.py
 
+Celery va Redis'ni ulash. Asinxron tasklarni va keshni sozlash.
+Loyihani Docker'ga o'rash (Dockerfile va docker-compose.yml) va GitHub'ga chiroyli README bilan yuklash.
+Fat Models, Thin Views: Mantiqni view ichida emas, model yoki service layer'da yozing.

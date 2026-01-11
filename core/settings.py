@@ -2,9 +2,8 @@ import os
 from sys import path
 from pathlib import Path
 from datetime import timedelta
+from celery.schedules import crontab
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 SECRET_KEY = 'django-insecure-r83nz89$_wn@pav)-sx0zo)*6(h-4%=&1%35a&rck3wo!5b)q9'
 
@@ -12,23 +11,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+path.insert(0, os.path.join(BASE_DIR, "apps"))
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'django_filters',
-    'drf_spectacular',
-    'corsheaders',
-    'users.apps.UsersConfig',
-    'products.apps.ProductsConfig',
-    'orders.apps.OrdersConfig',
-    'analytics.apps.AnalyticsConfig',
-    'payments.apps.PaymentsConfig',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.postgres",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_filters",
+    "drf_spectacular",
+    "corsheaders",
+    "apps.users",
+    "apps.products",
+    "apps.orders",
+    "apps.analytics",
+    "apps.payments",
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -39,6 +41,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
 }
 
 SIMPLE_JWT = {
@@ -77,20 +86,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "marketplace"),
+        "USER": os.getenv("DB_USER", "marketplace_admin"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "strong_password"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+        "CONN_MAX_AGE": 600,
+        "OPTIONS": {
+            "connect_timeout": 5,
+        },
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -107,21 +116,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_BEAT_SCHEDULE = {
+    "generate-daily-report-at-midnight": {
+        "task": "apps.analytics.tasks.generate_daily_report",
+        "schedule": crontab(hour=9, minute=0),
+    },
+}
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Tashkent"
 
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 MEDIA_URL = "/media/"
