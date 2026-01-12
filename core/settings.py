@@ -14,9 +14,9 @@ DATABASES = {
 
 SECRET_KEY = 'django-insecure-r83nz89$_wn@pav)-sx0zo)*6(h-4%=&1%35a&rck3wo!5b)q9'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["remarkable-deloria-jms-859dba6c.koyeb.app", "localhost", "127.0.0.1"]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 path.insert(0, os.path.join(BASE_DIR, "apps"))
@@ -92,6 +92,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://remarkable-deloria-jms-859dba6c.koyeb.app",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
