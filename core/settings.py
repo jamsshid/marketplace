@@ -3,7 +3,14 @@ from sys import path
 from pathlib import Path
 from datetime import timedelta
 from celery.schedules import crontab
+import dj_database_url
+import os
 
+DATABASES = {
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"), conn_max_age=600
+    )
+}
 
 SECRET_KEY = 'django-insecure-r83nz89$_wn@pav)-sx0zo)*6(h-4%=&1%35a&rck3wo!5b)q9'
 
