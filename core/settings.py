@@ -69,10 +69,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-CORS_ALLOWED_ORIGINS = [
-    "https://v0-sizning-loyihangiz.vercel.app",
-    "http://localhost:3000", 
-]
+CORS_ALLOWED_ORIGINS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
